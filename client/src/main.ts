@@ -2,9 +2,7 @@
  * Hello world
  */
 
- import {
-  PublicKeyInitData,
- } from '@solana/web3.js'
+
 
 import {
   establishConnection,
