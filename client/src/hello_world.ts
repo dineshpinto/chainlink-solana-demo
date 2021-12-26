@@ -10,6 +10,7 @@ import {
   TransactionInstruction,
   Transaction,
   sendAndConfirmTransaction,
+  PublicKeyInitData,
 } from '@solana/web3.js'
 import fs from 'mz/fs'
 import path from 'path'
@@ -201,9 +202,9 @@ const AGGREGATOR_SIZE = borsh.serialize(
 /**
  * Gets the price from our account
  */
-export async function getPrice(): Promise<void> {
+export async function getPrice(priceFeedAccount: PublicKeyInitData): Promise<void> {
   console.log('Getting data from ', readingPubkey.toBase58())
-  const priceFeedAccount = "FmAmfoyPXiA8Vhhe6MZTr3U6rZfEZ1ctEHay1ysqCqcf"
+  //const priceFeedAccount = "8pcXGi4QoHKytv3issKdFF3XRDeYAGEgy6EEAi1ioLe7"
   const AggregatorPublicKey = new PublicKey(priceFeedAccount)
   const instruction = new TransactionInstruction({
     keys: [{ pubkey: readingPubkey, isSigner: false, isWritable: true },
@@ -226,7 +227,7 @@ export async function getPrice(): Promise<void> {
  * Get more devnet price feeds from:
  * https://docs.chain.link/docs/solana-price-feeds/
  */
-export async function reportPrice(): Promise<void> {
+export async function reportPrice(market: string): Promise<void> {
   // const priceFeedAccount = "FmAmfoyPXiA8Vhhe6MZTr3U6rZfEZ1ctEHay1ysqCqcf"
   // const AggregatorPublicKey = new PublicKey(priceFeedAccount)
   const accountInfo = await connection.getAccountInfo(readingPubkey)
@@ -238,5 +239,5 @@ export async function reportPrice(): Promise<void> {
     AggregatorAccount,
     accountInfo.data,
   )
-  console.log("Current price of SOL/USD is: ", latestPrice.answer.toString())
+  console.log("Current price for", market, "is:", Number(latestPrice.answer) / 1000000000)
 }
